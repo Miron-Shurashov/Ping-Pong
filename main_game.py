@@ -1,5 +1,4 @@
 from pygame import *
-import pygame
 
 class GameSprite(sprite.Sprite):
     def __init__(self, plyer_image, plyer_x, plyer_y, plyer_speed, width, height):
@@ -26,26 +25,6 @@ class Plyer(GameSprite):
                 self.rect.y -= self.speed
             if keys[K_s] and self.rect.y < win_height - 85:
                 self.rect.y += self.speed
-
-pygame.init()
-screen = pygame.display.set_mode((400, 300))
-clock = pygame.time.Clock()
-
-start_time = pygame.time.get_ticks()
-
-while True:
-    # Игровой цикл
-    ticks = pygame.time.get_ticks()
-    millis = ticks % 1000
-    seconds = int(ticks / 1000 % 60)
-    minutes = int(ticks / 60000 % 24)
-
-    text = f'{minutes:02d}:{seconds:02d}:{millis}'
-    font = pygame.font.SysFont(None, 36)
-    score_text = font.render(text, True, (255, 255, 255))
-    screen.blit(score_text, (100, 100))
-    clock.tick(60)
-
 
 back = (200, 255, 255)
 win_width = 600
