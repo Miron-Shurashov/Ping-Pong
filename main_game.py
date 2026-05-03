@@ -1,11 +1,12 @@
 from pygame import *
+import pygame
 
 class GameSprite(sprite.Sprite):
     def __init__(self, plyer_image, plyer_x, plyer_y, plyer_speed, width, height):
         super().__init__()
         self.image = transform.scale(image.load(plyer_image), (width, height))
         self.speed = plyer_speed
-        self.rect = self.image.get_rocet()
+        self.rect = self.image.get_rect()
         self.rect.x =  plyer_x
         self.rect.y =  plyer_y
 
@@ -13,23 +14,43 @@ class GameSprite(sprite.Sprite):
         window.blit(self.image, (self.rect.x, self.rect.y))
 
 class Plyer(GameSprite):
-    def update(self):
+    def update_r(self):
         keys = key.get_pressed()
         if keys[K_UP] and self.rect.y > 5:
             self.rect.y -= self.speed
         if keys[K_DOWN] and self.rect.y < win_height - 85:
             self.rect.y += self.speed
-    def update(self):
+    def update_l(self):
             keys = key.get_pressed()
             if keys[K_w] and self.rect.y > 5:
                 self.rect.y -= self.speed
             if keys[K_s] and self.rect.y < win_height - 85:
                 self.rect.y += self.speed
 
+pygame.init()
+screen = pygame.display.set_mode((400, 300))
+clock = pygame.time.Clock()
+
+start_time = pygame.time.get_ticks()
+
+while True:
+    # Игровой цикл
+    ticks = pygame.time.get_ticks()
+    millis = ticks % 1000
+    seconds = int(ticks / 1000 % 60)
+    minutes = int(ticks / 60000 % 24)
+
+    text = f'{minutes:02d}:{seconds:02d}:{millis}'
+    font = pygame.font.SysFont(None, 36)
+    score_text = font.render(text, True, (255, 255, 255))
+    screen.blit(score_text, (100, 100))
+    clock.tick(60)
+
+
 back = (200, 255, 255)
 win_width = 600
 win_height = 500
-window = display.set_mode(win_width, win_height)
+window = display.set_mode((win_width, win_height))
 window.fill(back)
 
 game = True
@@ -37,17 +58,17 @@ finish = False
 clock = time.Clock()
 FPS = 60
 
-racket1 = Plyer('', 10, 200, 4, 20, 80)
-racket2 = Plyer('', 560, 200, 4, 20, 80)
-ball = GameSprite('', 200, 200, 4, 30, 30)
+racket1 = Plyer('rocket.png', 10, 200, 4, 20, 80)
+racket2 = Plyer('rocket.png', 560, 200, 4, 20, 80)
+ball = GameSprite('rocket.png', 200, 200, 4, 30, 30)
 
 speed_x = 3
 speed_y = 3
 
 font.init()
 font = font.Font(None, 30)
-lose1 = font.render('Правый игрок проиграл'), True, (100, 0, 0)
-lose2 = font.render('Правый игрок проиграл'), True, (100, 0, 0)
+lose1 = font.render('Правый игрок проиграл', True, (100, 0, 0))
+lose2 = font.render('Левый игрок проиграл', True, (100, 0, 0))
 
 while game:
     for e in event.get():
@@ -72,9 +93,9 @@ while game:
             window.blit(lose2, (180, 200))
             game_over = True
 
-        if ball.rect.y < win_width - 30:
+        if ball.rect.x > win_width - 30:
             finish = True
-            window.blit(lose2, (180, 200))
+            window.blit(lose1, (180, 200))
             game_over = True
 
         racket1.reset()
